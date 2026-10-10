@@ -1,4 +1,4 @@
-set(LIBRARY_NAME HydrolibMath)
+set(LIBRARY_NAME HydrolibFixedPoint)
 
 add_library(${LIBRARY_NAME} INTERFACE)
 
