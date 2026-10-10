@@ -1,6 +1,9 @@
 #pragma once
 
-#include "hydrolib_arithmetic_concept.hpp"
+#include <cassert>
+#include <cmath>
+
+#include "hydrolib_arythmetic_concept.hpp"
 
 namespace hydrolib::math
 {
@@ -10,8 +13,17 @@ struct Quaternion
 {
     static constexpr Number Dot(const Quaternion<Number> &first,
                                 const Quaternion<Number> &second);
+    static constexpr Quaternion<Number>
+    Multiply(const Quaternion<Number> &first, const Quaternion<Number> &second);
+
     [[nodiscard]] constexpr Number GetNorm() const;
     constexpr void Normalize();
+    [[nodiscard]] constexpr Quaternion<Number> GetConjugated() const;
+
+    constexpr Quaternion<Number> operator!() const;
+    constexpr Quaternion<Number> operator-() const;
+    constexpr Quaternion<Number> &operator+=(const Quaternion<Number> &second);
+    constexpr Quaternion<Number> &operator-=(const Quaternion<Number> &second);
 
     Number x;
     Number y;
@@ -20,51 +32,49 @@ struct Quaternion
 };
 
 template <ArithmeticConcept Number>
-Quaternion<Number> &operator+=(Quaternion<Number> &first,
-                               const Quaternion<Number> &second);
+constexpr Quaternion<Number> operator+(const Quaternion<Number> &first,
+                                       const Quaternion<Number> &second);
 template <ArithmeticConcept Number>
-Quaternion<Number> operator-(const Quaternion<Number> &first);
+constexpr Quaternion<Number> operator-(const Quaternion<Number> &first,
+                                       const Quaternion<Number> &second);
 template <ArithmeticConcept Number>
-Quaternion<Number> operator+(const Quaternion<Number> &first,
-                             const Quaternion<Number> &second);
+constexpr Quaternion<Number> operator*(Number multiplier,
+                                       const Quaternion<Number> &first);
 template <ArithmeticConcept Number>
-Quaternion<Number> operator-(const Quaternion<Number> &first,
-                             const Quaternion<Number> &second);
+constexpr Quaternion<Number> operator*(const Quaternion<Number> &first,
+                                       Number multiplier);
 template <ArithmeticConcept Number>
-Quaternion<Number> operator*(const Quaternion<Number> &first,
-                             const Quaternion<Number> &second);
-template <ArithmeticConcept Number>
-Quaternion<Number> operator!(const Quaternion<Number> &first);
-template <ArithmeticConcept Number>
-Quaternion<Number> operator*(Number multiplier,
-                             const Quaternion<Number> &first);
-template <ArithmeticConcept Number>
-Quaternion<Number> operator*(const Quaternion<Number> &first,
-                             Number multiplier);
-template <ArithmeticConcept Number>
-Quaternion<Number> operator/(const Quaternion<Number> &first, Number divider);
+constexpr Quaternion<Number> operator/(const Quaternion<Number> &first,
+                                       Number divider);
 
 template <ArithmeticConcept Number>
-inline Quaternion<Number> &operator+=(Quaternion<Number> &first,
-                                      const Quaternion<Number> &second)
+constexpr Quaternion<Number> &
+Quaternion<Number>::operator+=(const Quaternion<Number> &second)
 {
-    first.x += second.x;
-    first.y += second.y;
-    first.z += second.z;
-    first.w += second.w;
-    return first;
+    x += second.x;
+    y += second.y;
+    z += second.z;
+    w += second.w;
+    return *this;
 }
 
 template <ArithmeticConcept Number>
-inline Quaternion<Number> operator-(const Quaternion<Number> &first)
+constexpr Quaternion<Number> &
+Quaternion<Number>::operator-=(const Quaternion<Number> &second)
 {
-    return Quaternion<Number>(
-        {.x = -first.x, .y = -first.y, .z = -first.z, .w = -first.w});
+    *this += -second;
+    return *this;
 }
 
 template <ArithmeticConcept Number>
-inline Quaternion<Number> operator+(const Quaternion<Number> &first,
-                                    const Quaternion<Number> &second)
+constexpr Quaternion<Number> Quaternion<Number>::operator-() const
+{
+    return Quaternion<Number>({.x = -x, .y = -y, .z = -z, .w = -w});
+}
+
+template <ArithmeticConcept Number>
+constexpr Quaternion<Number> operator+(const Quaternion<Number> &first,
+                                       const Quaternion<Number> &second)
 {
     Quaternion<Number> result = first;
     result += second;
@@ -72,17 +82,18 @@ inline Quaternion<Number> operator+(const Quaternion<Number> &first,
 }
 
 template <ArithmeticConcept Number>
-inline Quaternion<Number> operator-(const Quaternion<Number> &first,
-                                    const Quaternion<Number> &second)
+constexpr Quaternion<Number> operator-(const Quaternion<Number> &first,
+                                       const Quaternion<Number> &second)
 {
     Quaternion<Number> result = first;
-    result += -second;
+    result -= second;
     return result;
 }
 
 template <ArithmeticConcept Number>
-inline Quaternion<Number> operator*(const Quaternion<Number> &first,
-                                    const Quaternion<Number> &second)
+constexpr Quaternion<Number>
+Quaternion<Number>::Multiply(const Quaternion<Number> &first,
+                             const Quaternion<Number> &second)
 {
     return Quaternion<Number>(
         {.x = (first.x * second.w) + (first.w * second.x) +
@@ -96,15 +107,20 @@ inline Quaternion<Number> operator*(const Quaternion<Number> &first,
 }
 
 template <ArithmeticConcept Number>
-inline Quaternion<Number> operator!(const Quaternion<Number> &first)
+constexpr Quaternion<Number> Quaternion<Number>::GetConjugated() const
 {
-    return Quaternion<Number>(
-        {.x = -first.x, .y = -first.y, .z = -first.z, .w = first.w});
+    return Quaternion<Number>({.x = -x, .y = -y, .z = -z, .w = w});
 }
 
 template <ArithmeticConcept Number>
-inline Quaternion<Number> operator*(Number multiplier,
-                                    const Quaternion<Number> &first)
+constexpr Quaternion<Number> Quaternion<Number>::operator!() const
+{
+    return GetConjugated();
+}
+
+template <ArithmeticConcept Number>
+constexpr Quaternion<Number> operator*(Number multiplier,
+                                       const Quaternion<Number> &first)
 {
     return Quaternion<Number>({.x = first.x * multiplier,
                                .y = first.y * multiplier,
@@ -113,15 +129,15 @@ inline Quaternion<Number> operator*(Number multiplier,
 }
 
 template <ArithmeticConcept Number>
-inline Quaternion<Number> operator*(const Quaternion<Number> &first,
-                                    Number multiplier)
+constexpr Quaternion<Number> operator*(const Quaternion<Number> &first,
+                                       Number multiplier)
 {
     return multiplier * first;
 }
 
 template <ArithmeticConcept Number>
-inline Quaternion<Number> operator/(const Quaternion<Number> &first,
-                                    Number divider)
+constexpr Quaternion<Number> operator/(const Quaternion<Number> &first,
+                                       Number divider)
 {
     return Quaternion<Number>({.x = first.x / divider,
                                .y = first.y / divider,
@@ -130,31 +146,25 @@ inline Quaternion<Number> operator/(const Quaternion<Number> &first,
 }
 
 template <ArithmeticConcept Number>
-inline Number Quaternion<Number>::Dot(const Quaternion<Number> &first,
-                                      const Quaternion<Number> &second)
+constexpr Number Quaternion<Number>::Dot(const Quaternion<Number> &first,
+                                         const Quaternion<Number> &second)
 {
     return (first.x * second.x) + (first.y * second.y) + (first.z * second.z) +
            (first.w * second.w);
 }
 
 template <ArithmeticConcept Number>
-inline Number Quaternion<Number>::GetNorm(const Quaternion<Number> &first)
+constexpr Number Quaternion<Number>::GetNorm() const
 {
-    return sqrt((first.x * first.x) + (first.y * first.y) +
-                (first.z * first.z) + (first.w * first.w));
+    return sqrt((x * x) + (y * y) + (z * z) + (w * w));
 }
 
 template <ArithmeticConcept Number>
-inline void Quaternion<Number>::Normalize(Quaternion<Number> &first)
+constexpr void Quaternion<Number>::Normalize()
 {
-    Number norm = GetNorm(first);
-    if (norm != 0)
-    {
-        first.x /= norm;
-        first.y /= norm;
-        first.z /= norm;
-        first.w /= norm;
-    }
+    Number norm = GetNorm();
+    assert(norm != 0);
+    *this = *this / norm;
 }
 
 } // namespace hydrolib::math

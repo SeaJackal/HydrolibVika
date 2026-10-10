@@ -72,6 +72,7 @@ template <ArithmeticConcept Number>
 constexpr void Vector3D<Number>::Normalize()
 {
     auto len = GetLength();
+    assert(len != 0);
     *this /= len;
 }
 

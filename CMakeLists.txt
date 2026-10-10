@@ -17,6 +17,7 @@ endif()
 add_subdirectory(hydrolib_fixed_point)
 add_subdirectory(hydrolib_math_concepts)
 add_subdirectory(hydrolib_vector3d)
+add_subdirectory(hydrolib_quaternion)
 
 add_custom_target(compdb ALL
     COMMAND /bin/sh -c "compdb -p ${CMAKE_BINARY_DIR} list > compile_commands.json && mv compile_commands.json ${CMAKE_BINARY_DIR}/compile_commands.json"
