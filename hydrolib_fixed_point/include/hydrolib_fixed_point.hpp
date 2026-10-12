@@ -42,6 +42,8 @@ public:
     constexpr FixedPoint &operator/=(FixedPoint<kOtherFractionBits> other);
     constexpr FixedPoint &operator*=(int other);
     constexpr FixedPoint &operator/=(int other);
+    constexpr FixedPoint &operator<<=(int other);
+    constexpr FixedPoint &operator>>=(int other);
 
     constexpr std::strong_ordering
     operator<=>(const FixedPoint &other) const = default;
@@ -77,6 +79,14 @@ operator*(FixedPoint<kFractionBitsParam> first, int second);
 template <int kFractionBitsParam>
 constexpr FixedPoint<kFractionBitsParam>
 operator/(FixedPoint<kFractionBitsParam> first, int second);
+
+template <int kFractionBitsParam>
+constexpr FixedPoint<kFractionBitsParam>
+operator<<(FixedPoint<kFractionBitsParam> first, int second);
+
+template <int kFractionBitsParam>
+constexpr FixedPoint<kFractionBitsParam>
+operator>>(FixedPoint<kFractionBitsParam> first, int second);
 
 template <int kFractionBitsParam>
 constexpr FixedPoint<kFractionBitsParam>
@@ -236,6 +246,22 @@ FixedPoint<kFractionBitsParam>::operator/=(int other)
 }
 
 template <int kFractionBitsParam>
+constexpr FixedPoint<kFractionBitsParam> &
+FixedPoint<kFractionBitsParam>::operator<<=(int other)
+{
+    value_ <<= other;
+    return *this;
+}
+
+template <int kFractionBitsParam>
+constexpr FixedPoint<kFractionBitsParam> &
+FixedPoint<kFractionBitsParam>::operator>>=(int other)
+{
+    value_ >>= other;
+    return *this;
+}
+
+template <int kFractionBitsParam>
 constexpr FixedPoint<kFractionBitsParam>
 operator+(FixedPoint<kFractionBitsParam> first,
           FixedPoint<kFractionBitsParam> second)
@@ -290,6 +316,24 @@ operator/(FixedPoint<kFractionBitsParam> first, int second)
 {
     FixedPoint<kFractionBitsParam> result = first;
     result /= second;
+    return result;
+}
+
+template <int kFractionBitsParam>
+constexpr FixedPoint<kFractionBitsParam>
+operator<<(FixedPoint<kFractionBitsParam> first, int second)
+{
+    FixedPoint<kFractionBitsParam> result = first;
+    result <<= second;
+    return result;
+}
+
+template <int kFractionBitsParam>
+constexpr FixedPoint<kFractionBitsParam>
+operator>>(FixedPoint<kFractionBitsParam> first, int second)
+{
+    FixedPoint<kFractionBitsParam> result = first;
+    result >>= second;
     return result;
 }
 
