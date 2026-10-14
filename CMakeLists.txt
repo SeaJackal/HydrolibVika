@@ -15,6 +15,7 @@ endif()
 
 # add_subdirectory(hydrolib_shell_commands)
 add_subdirectory(hydrolib_fixed_point)
+add_subdirectory(hydrolib_trigonometry)
 add_subdirectory(hydrolib_math_concepts)
 add_subdirectory(hydrolib_vector3d)
 add_subdirectory(hydrolib_quaternion)
