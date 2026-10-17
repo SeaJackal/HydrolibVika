@@ -41,7 +41,9 @@
             "name": "Release",
             "inherits": "default",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "Release",
+                "BUILD_BENCHMARKS": "ON",
+                "COVERAGE": "OFF"
             }
         },
         {
