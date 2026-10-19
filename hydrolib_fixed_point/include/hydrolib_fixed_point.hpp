@@ -370,14 +370,16 @@ operator*(FixedPoint<kFractionBitsParam> first,
     return result;
 }
 
-template <int kFractionBitsParam, typename T>
+template <int kFractionBitsParam,
+          std::convertible_to<FixedPoint<kFractionBitsParam>> T>
 constexpr FixedPoint<kFractionBitsParam>
 operator*(FixedPoint<kFractionBitsParam> first, T &&second)
 {
     return first * FixedPoint<kFractionBitsParam>(std::forward<T>(second));
 }
 
-template <int kFractionBitsParam, typename T>
+template <int kFractionBitsParam,
+          std::convertible_to<FixedPoint<kFractionBitsParam>> T>
 constexpr FixedPoint<kFractionBitsParam>
 operator*(T &&first, FixedPoint<kFractionBitsParam> second)
 {
@@ -394,7 +396,8 @@ operator/(FixedPoint<kFractionBitsParam> first,
     return result;
 }
 
-template <int kFractionBitsParam, typename T>
+template <int kFractionBitsParam,
+          std::convertible_to<FixedPoint<kFractionBitsParam>> T>
 constexpr FixedPoint<kFractionBitsParam>
 operator/(FixedPoint<kFractionBitsParam> first, T &&second)
 {
